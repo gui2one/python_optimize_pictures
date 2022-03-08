@@ -1,21 +1,16 @@
 from PIL import Image
 import os
 import sys
+from Application import Converter
+from PyQt5.QtWidgets import QApplication, QFileDialog
 
-from PyQt5.QtWidgets import QApplication ,QFileDialog
-
+# print(dir(Converter))
 app = QApplication([])
-# label = QLabel("Hello there !")
-# label.show()
+my_widget = Converter("Converter")
+app.exec_()
+
+sys.exit(0)
 selected_folder = str(QFileDialog.getExistingDirectory(None, "Select Directory"))
-print(selected_folder)
-# app.exec_()
-
-# sys.exit(0)
-
-# folder_selected = filedialog.askdirectory()
-
-# print(dir(Image))
 
 pictures_folder = selected_folder
 
@@ -25,7 +20,6 @@ print(files)
 for file_name in files:
 
     full_path = os.path.join(pictures_folder, file_name)
-    # print( os.path.isdir(full_path),full_path)
     if not os.path.isdir(full_path):
         print("\nConverting -> "+file_name)
         with Image.open(os.path.join(pictures_folder, file_name), 'r') as img :
