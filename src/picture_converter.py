@@ -19,7 +19,7 @@ def listFilesInDir( dir_path):
                 clean_files.append(item)
     return clean_files
 
-def optimizePicture(file_name, pictures_folder):
+def optimizePicture(file_name, pictures_folder, max_size=512):
     with Image.open(os.path.join(pictures_folder, file_name), 'r') as img :
 
 
@@ -27,7 +27,7 @@ def optimizePicture(file_name, pictures_folder):
         height = img.size[1]
 
         scale_ratio = 1.0
-        limit  = 256
+        limit  = max_size
         max_dim = max(width, height)
         if  max_dim > limit :
             scale_ratio = limit / max_dim

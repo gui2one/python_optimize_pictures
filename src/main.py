@@ -6,7 +6,51 @@ from PyQt5.QtWidgets import QApplication, QFileDialog
 
 # print(dir(Converter))
 app = QApplication([])
+app.setStyleSheet('''
+*{
+
+    background-color: #111111;
+    color : white;
+    font-size : 18px;
+}
+QLabel{
+    font-size : 13px;
+}
+
+QListWidget{
+    background-color : #222222;
+    font-size : 13px;
+}
+QListWidget::indicator:checked{
+
+    background : green;
+    color : white;
+    subcontrol-position: top center;
+    border : 1px solid white;
+}
+QListWidget::indicator:unchecked:hover{
+
+    background : white;
+}
+QListWidget::indicator:hover{
+    background : darkgreen;
+}
+
+QLineEdit { 
+    background-color: #222222;
+    border : none;
+
+}
+QPushButton { 
+    padding : 15px;
+    border : none;    
+    background-color : #222222;
+    color : white;
+}
+
+''');
 my_widget = Converter("Converter")
+
 app.exec_()
 
 sys.exit(0)

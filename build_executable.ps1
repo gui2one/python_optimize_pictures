@@ -1,1 +1,1 @@
-pyinstaller --onefile ./src/main.py
+pyinstaller --icon=./favicon.ico --onefile --noconsole ./src/main.py
