@@ -9,8 +9,8 @@ class Converter(QWidget) :
     label = None
     btn_dir = None
     btn_optimize = None
-    list_view = None
-    list_view_model = None
+
+
     max_size_input = None
     progress = None
     main_frame = None
@@ -50,12 +50,11 @@ class Converter(QWidget) :
         deselect_all_btn.clicked.connect(self.deselectAll)
         btns_layout.addWidget(deselect_all_btn)
 
-        size_input = QInputDialog()
-        
-        self.list_view = QListWidget()
+
+        self.list_view = QListView()
         self.list_view.setMaximumHeight(250)
-        self.list_view.itemClicked.connect(self.onListItemClick)
-        sources_layout.addWidget(self.list_view)
+        self.list_view.clicked.connect(self.onListViewItemClick)
+        sources_layout.addWidget(self.list_view) 
 
         hbox = QHBoxLayout()
         hbox.setAlignment(Qt.AlignLeft)
@@ -74,11 +73,13 @@ class Converter(QWidget) :
 
         self.btn_optimize = QPushButton("Optimize Pictures", self)
         self.btn_optimize.clicked.connect(self.optimizePictures)
+        self.btn_optimize.setObjectName("GO")
         layout.addWidget(self.btn_optimize)
 
         self.progress = QProgressBar()
         layout.addWidget(self.progress)
         
+        self.progress.hide()
         self.show()
 
     def getFolderName(self): 
@@ -89,41 +90,55 @@ class Converter(QWidget) :
         self.btn_dir.setText(self.pictureDir)
         files = listFilesInDir(self.pictureDir)
 
-        self.list_view.clear()
         self.progress.setValue(0)
+        self.progress.hide()
+        model = QStandardItemModel()
+        self.list_view.setModel(model)
         for file_name in files :
-
-            item = QListWidgetItem()
-            item.setText(file_name)
+            item = QStandardItem()
+            item.setCheckable(True)
             item.setCheckState(Qt.Checked)
-                  
-            self.list_view.addItem(item)
+            item.setText(file_name)
+            model.appendRow(item)
+            
 
 
     def optimizePictures(self):
-
-        num_pictures = self.list_view.count()
-        for i in range(num_pictures):
-            
-            item = self.list_view.item(i)
+        self.progress.show()
+        model = self.list_view.model()
+        if not model : return
+        num = model.rowCount()
+        checked_rows = []
+        # get num checked
+        for i in range(num):
+            item = model.item(i)
+            if item.checkState() :
+                checked_rows.append(i)
+                
+        for i, idx in enumerate(checked_rows):
+            item = model.item(idx)
             if item.checkState() :
                 print(item.text())
                 optimizePicture(item.text(), self.pictureDir, int(self.max_size_input.text()))
+                percent = int(i / (len(checked_rows)-1) * 100)
+                self.progress.setValue(percent)
 
-            percent = int(i / (num_pictures-1) * 100)
-            self.progress.setValue(percent)
 
     def selectAll(self):
-        for i in range(self.list_view.count()):
-            
-            item = self.list_view.item(i)
-            item.setCheckState(Qt.Checked)
+
+        for i in range(self.list_view.model().rowCount()):
+            model = self.list_view.model()
+            item = model.item(i)
+            item.setCheckState( Qt.Checked)            
 
     def deselectAll(self):
-        for i in range(self.list_view.count()):
-            
-            item = self.list_view.item(i)
-            item.setCheckState(Qt.Unchecked)
+
+
+        for i in range(self.list_view.model().rowCount()):
+            model = self.list_view.model()
+            item = model.item(i)
+            item.setCheckState( Qt.Unchecked)
+
 
     def validateSize(self):
         rule = QDoubleValidator(250, 1920, 0)
@@ -138,4 +153,10 @@ class Converter(QWidget) :
     def onListItemClick(self, item):
         if item.checkState() ==  Qt.Checked : item.setCheckState(Qt.Unchecked)
         else : item.setCheckState(Qt.Checked)
-        # print(item.checkState())
+
+
+    def onListViewItemClick(self, idx):
+        model = self.list_view.model()
+        item = model.item(idx.row())
+        if item.checkState() ==  Qt.Checked : item.setCheckState(Qt.Unchecked)
+        else : item.setCheckState(Qt.Checked)

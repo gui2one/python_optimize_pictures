@@ -16,23 +16,33 @@ app.setStyleSheet('''
 QLabel{
     font-size : 13px;
 }
-
-QListWidget{
+QListView{
     background-color : #222222;
     font-size : 13px;
 }
-QListWidget::indicator:checked{
+QListView::item:active{
+    background-color : #222222;
+    font-size : 13px;
+    color : white;
+}
+QListView::item:!active{
+    color : white;
+}
+QListView::indicator:checked{
 
     background : green;
-    color : white;
-    subcontrol-position: top center;
-    border : 1px solid white;
+
 }
-QListWidget::indicator:unchecked:hover{
+QListView::indicator:!checked{
+
+    background : #222222;
+
+}
+QListView::indicator:unchecked:hover{
 
     background : white;
 }
-QListWidget::indicator:hover{
+QListView::indicator:hover{
     background : darkgreen;
 }
 
@@ -44,65 +54,32 @@ QLineEdit {
 QPushButton { 
     padding : 15px;
     border : none;    
-    background-color : #222222;
+    background: qlineargradient( x1:0 y1:0.2, x2:1.0 y2:1, stop:0 #555555, stop:1 #333333);
     color : white;
 }
+QPushButton#GO { 
+    padding : 15px;
+    border : none;    
+    background: qlineargradient( x1:0 y1:0.2, x2:1.0 y2:1, stop:0 #22aa22, stop:1 #559955);
+    color : white;
+}
+QPushButton#GO:hover { 
+    background: qlineargradient( x1:0 y1:0.2, x2:1.0 y2:1, stop:0 #33bb33, stop:1 #559955);
+ 
+}
+QProgressBar {
+    border: 2px solid grey;
+    border-radius: 5px;
+    text-align: center;
+}
 
+QProgressBar::chunk {
+    background-color: #05B8CC;
+    width: 20px;
+}
 ''');
 my_widget = Converter("Converter")
 
 app.exec_()
 
 sys.exit(0)
-selected_folder = str(QFileDialog.getExistingDirectory(None, "Select Directory"))
-
-pictures_folder = selected_folder
-
-
-files = os.listdir(os.path.join(pictures_folder))
-print(files)
-for file_name in files:
-
-    full_path = os.path.join(pictures_folder, file_name)
-    if not os.path.isdir(full_path):
-        print("\nConverting -> "+file_name)
-        with Image.open(os.path.join(pictures_folder, file_name), 'r') as img :
-
-
-            width = img.size[0]
-            height = img.size[1]
-
-            scale_ratio = 1.0
-            limit  = 256
-            max_dim = max(width, height)
-            if  max_dim > limit :
-                scale_ratio = limit / max_dim
-            new_width =  int(width * scale_ratio)
-            new_height =  int(height * scale_ratio)
-            # num_components = img.info()
-            
-            print("\tmode : %s"%(img.mode))
-            print("\tformat : %s"%(img.format_description))
-            print("\tsize : %d %d"%(width, height))
-            print("\tNew size : %d %d"%(new_width, new_height))
-
-            root, ext = os.path.splitext(file_name)
-            img.load()
-            img = img.resize(size=(new_width, new_height))
-            # img.show()
-
-            optim_folder = os.path.join(pictures_folder, "OPTIM")
-            if not os.path.isdir(optim_folder):
-                os.makedirs(optim_folder, mode=0o700)
-            save_path = os.path.join(optim_folder,root+"_OPTIM"+ext)
-            
-            if ext.lower() == ".jpg" or ext.lower() == ".jpeg":
-                img.save(save_path, quality=50)
-            else :
-                img.save(save_path)
-
-            print("\tSaving to : "+os.path.abspath(save_path))
-
-            img.close()
-
-    
