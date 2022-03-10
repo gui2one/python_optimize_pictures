@@ -51,8 +51,10 @@ class Converter(QWidget) :
         btns_layout.addWidget(deselect_all_btn)
 
 
-        self.list_view = QListView()
-        self.list_view.setMaximumHeight(250)
+        self.list_view = QTableView()
+        self.list_view.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        # self.list_view.setMaximumHeight(250)
         self.list_view.clicked.connect(self.onListViewItemClick)
         sources_layout.addWidget(self.list_view) 
 
@@ -93,6 +95,7 @@ class Converter(QWidget) :
         self.progress.setValue(0)
         self.progress.hide()
         model = QStandardItemModel()
+        model.setHorizontalHeaderLabels(["name", "weight"])
         self.list_view.setModel(model)
         for file_name in files :
             item = QStandardItem()
@@ -120,8 +123,9 @@ class Converter(QWidget) :
             if item.checkState() :
                 print(item.text())
                 optimizePicture(item.text(), self.pictureDir, int(self.max_size_input.text()))
-                percent = int(i / (len(checked_rows)-1) * 100)
-                self.progress.setValue(percent)
+                if len(checked_rows) > 1 :
+                    percent = int(i / (len(checked_rows)-1) * 100)
+                    self.progress.setValue(percent)
 
 
     def selectAll(self):

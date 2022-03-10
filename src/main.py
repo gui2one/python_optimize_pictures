@@ -1,52 +1,56 @@
-from PIL import Image
-import os
 import sys
 from Application import Converter
-from PyQt5.QtWidgets import QApplication, QFileDialog
+from PyQt5.QtWidgets import QApplication
 
-# print(dir(Converter))
+
 app = QApplication([])
 app.setStyleSheet('''
 *{
 
     background-color: #111111;
-    color : white;
-    font-size : 18px;
+
+    font-size : 15px;
 }
 QLabel{
     font-size : 13px;
+    color : white;
 }
-QListView{
+QTableView{
     background-color : #222222;
+    selection-background-color : #222222;
+    color : black;
     font-size : 13px;
 }
-QListView::item:active{
+QTableView QTableCornerButton::section {
+    background: white;
+    border: 2px outset red;
+}
+QTableView::item:active{
     background-color : #222222;
     font-size : 13px;
     color : white;
 }
-QListView::item:!active{
+QTableView::item:!active{
     color : white;
 }
-QListView::indicator:checked{
+QTableView::indicator:checked{
 
     background : green;
 
 }
-QListView::indicator:!checked{
+QTableView::indicator:!checked{
 
     background : #222222;
 
 }
-QListView::indicator:unchecked:hover{
 
-    background : white;
-}
-QListView::indicator:hover{
-    background : darkgreen;
+QTableView::indicator:hover{
+    
+    border : 2px solid white;
 }
 
 QLineEdit { 
+    color : white;
     background-color: #222222;
     border : none;
 
@@ -79,6 +83,7 @@ QProgressBar::chunk {
 }
 ''');
 my_widget = Converter("Converter")
+
 
 app.exec_()
 
