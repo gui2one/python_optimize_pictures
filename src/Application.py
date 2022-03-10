@@ -90,19 +90,21 @@ class Converter(QWidget) :
         self.pictureDir = selected_folder
         # print(self.pictureDir)
         self.btn_dir.setText(self.pictureDir)
-        files = listFilesInDir(self.pictureDir)
+        files_infos = listFilesInDir(self.pictureDir)
 
         self.progress.setValue(0)
         self.progress.hide()
         model = QStandardItemModel()
         model.setHorizontalHeaderLabels(["name", "weight"])
         self.list_view.setModel(model)
-        for file_name in files :
-            item = QStandardItem()
+        for info in files_infos :
+            item = QStandardItem(info[0])
             item.setCheckable(True)
             item.setCheckState(Qt.Checked)
-            item.setText(file_name)
-            model.appendRow(item)
+
+            weight = QStandardItem(info[1])
+
+            model.appendRow([item, weight])
             
 
 

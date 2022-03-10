@@ -13,10 +13,12 @@ def listFilesInDir( dir_path):
     files = os.listdir(os.path.join(dir_path))
     
     clean_files = []
-    for item in files :
-        if not os.path.isdir(os.path.join(dir_path, item)):
-            if checkImageExtension(item):
-                clean_files.append(item)
+    for file_name in files :
+        path_to_file = os.path.join(dir_path, file_name)
+        if not os.path.isdir(path_to_file):
+            if checkImageExtension(file_name):
+                size = os.path.getsize(path_to_file)
+                clean_files.append((file_name, str(size)))
     return clean_files
 
 def optimizePicture(file_name, pictures_folder, max_size=512):
