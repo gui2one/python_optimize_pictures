@@ -18,7 +18,7 @@ def listFilesInDir( dir_path):
         if not os.path.isdir(path_to_file):
             if checkImageExtension(file_name):
                 size = os.path.getsize(path_to_file)
-                clean_files.append((file_name, str(size)))
+                clean_files.append((file_name, size))
     return clean_files
 
 def optimizePicture(file_name, pictures_folder, max_size=512):

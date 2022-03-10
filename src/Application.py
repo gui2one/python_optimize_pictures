@@ -53,7 +53,7 @@ class Converter(QWidget) :
 
         self.list_view = QTableView()
         self.list_view.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-
+        
         # self.list_view.setMaximumHeight(250)
         self.list_view.clicked.connect(self.onListViewItemClick)
         sources_layout.addWidget(self.list_view) 
@@ -96,15 +96,21 @@ class Converter(QWidget) :
         self.progress.hide()
         model = QStandardItemModel()
         model.setHorizontalHeaderLabels(["name", "weight"])
+
         self.list_view.setModel(model)
+        self.list_view.setColumnWidth(0,350)
         for info in files_infos :
-            item = QStandardItem(info[0])
-            item.setCheckable(True)
-            item.setCheckState(Qt.Checked)
-
-            weight = QStandardItem(info[1])
-
-            model.appendRow([item, weight])
+            file_name = QStandardItem(info[0])
+            file_name.setCheckable(True)
+            file_name.setCheckState(Qt.Checked)
+            
+            num_bytes = info[1]
+            if num_bytes / 1024.0 / 1024.0 > 1.0 :
+                weight = QStandardItem('%d Mo'%(num_bytes /1024 / 1024))
+            else : 
+                weight = QStandardItem('%d Ko'%(num_bytes /1024))
+            weight.setTextAlignment(Qt.AlignRight)
+            model.appendRow([file_name, weight])
             
 
 
