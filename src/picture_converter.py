@@ -46,12 +46,18 @@ def optimizePicture(file_name, pictures_folder, max_size=512):
         img.load()
         img = img.resize(size=(new_width, new_height))
         # img.show()
+        img = img.convert('RGB')
 
+
+        # img = img.convert('P', palette=Image.ADAPTIVE)
         optim_folder = os.path.join(pictures_folder, "OPTIM")
         if not os.path.isdir(optim_folder):
             os.makedirs(optim_folder, mode=0o700)
-        save_path = os.path.join(optim_folder,root+"_OPTIM"+ext)
         
+        if ext.lower() == ".png" :
+            ext = ".jpg" 
+
+        save_path = os.path.join(optim_folder,root+"_OPTIM"+ext)
         if ext.lower() == ".jpg" or ext.lower() == ".jpeg":
             img.save(save_path, quality=50)
         else :
@@ -60,3 +66,7 @@ def optimizePicture(file_name, pictures_folder, max_size=512):
         print("\tSaving to : "+os.path.abspath(save_path))
 
         img.close()
+
+        return os.path.abspath(save_path)
+    
+    return None

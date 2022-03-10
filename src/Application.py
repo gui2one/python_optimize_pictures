@@ -1,4 +1,4 @@
-from fileinput import filename
+import os
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import  *
 from PyQt5.QtCore import *
@@ -95,7 +95,7 @@ class Converter(QWidget) :
         self.progress.setValue(0)
         self.progress.hide()
         model = QStandardItemModel()
-        model.setHorizontalHeaderLabels(["name", "weight"])
+        model.setHorizontalHeaderLabels(["name", "before", "after"])
 
         self.list_view.setModel(model)
         self.list_view.setColumnWidth(0,350)
@@ -105,15 +105,24 @@ class Converter(QWidget) :
             file_name.setCheckState(Qt.Checked)
             
             num_bytes = info[1]
-            if num_bytes / 1024.0 / 1024.0 > 1.0 :
-                weight = QStandardItem('%d Mo'%(num_bytes /1024 / 1024))
-            else : 
-                weight = QStandardItem('%d Ko'%(num_bytes /1024))
+            weight_str = self.displayFileWeight(num_bytes)
+            weight = QStandardItem(weight_str)
             weight.setTextAlignment(Qt.AlignRight)
-            model.appendRow([file_name, weight])
+
+            weight_after = QStandardItem()
+            weight_after.setTextAlignment(Qt.AlignRight)
+            model.appendRow([file_name, weight, weight_after])
             
 
+    def displayFileWeight(self,num_bytes):
+        result = ''
+        if num_bytes / 1024.0 / 1024.0 > 1.0 :
+            result = '%d Mo'%(num_bytes /1024 / 1024)
+        else : 
+            result = '%d Ko'%(num_bytes /1024)
 
+        return result
+    
     def optimizePictures(self):
         self.progress.show()
         model = self.list_view.model()
@@ -128,12 +137,22 @@ class Converter(QWidget) :
                 
         for i, idx in enumerate(checked_rows):
             item = model.item(idx)
+            model_index = model.index(idx, 2)
             if item.checkState() :
-                print(item.text())
-                optimizePicture(item.text(), self.pictureDir, int(self.max_size_input.text()))
+                # print(item.text())
+                optimized_path = optimizePicture(item.text(), self.pictureDir, int(self.max_size_input.text()))
+                
                 if len(checked_rows) > 1 :
                     percent = int(i / (len(checked_rows)-1) * 100)
                     self.progress.setValue(percent)
+            
+
+                if optimized_path != None:
+                    opt_weight = os.path.getsize(optimized_path)
+    
+                self.list_view.model().setItemData(model_index , {0: self.displayFileWeight(opt_weight)})
+
+            
 
 
     def selectAll(self):
