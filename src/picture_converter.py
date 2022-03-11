@@ -54,7 +54,7 @@ def optimizePicture(file_name, pictures_folder, max_size=512):
         if not os.path.isdir(optim_folder):
             os.makedirs(optim_folder, mode=0o700)
         
-        if ext.lower() == ".png" :
+        if ext.lower() == ".png"  or ext.lower() == ".webp":
             ext = ".jpg" 
 
         save_path = os.path.join(optim_folder,root+"_OPTIM"+ext)

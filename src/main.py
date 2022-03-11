@@ -21,10 +21,7 @@ QTableView{
     color : black;
     font-size : 13px;
 }
-QTableView QTableCornerButton::section {
-    background: white;
-    border: 2px outset red;
-}
+
 QTableView::item:active{
     background-color : #222222;
     font-size : 13px;

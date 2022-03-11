@@ -23,7 +23,7 @@ class Converter(QWidget) :
 
     def initUI(self):
         self.setGeometry(200, 200, 800, 600)
-        self.setWindowTitle('SprayLoc -- Picture Optimizer v0.0.1')
+        self.setWindowTitle('SprayLoc -- Picture Optimizer v0.0.2')
         self.setWindowIcon(QIcon('favicon.ico'))
 
         self.main_frame = QFrame(self)
@@ -62,21 +62,28 @@ class Converter(QWidget) :
         hbox.setAlignment(Qt.AlignLeft)
         layout.addLayout(hbox)
 
+        
+
+        bottom_layout = QHBoxLayout()
+        bottom_layout.setObjectName("params")
+        layout.addLayout(bottom_layout)
+
         self.max_size_input = QLineEdit(self)
         self.max_size_input.setText("1640")
         self.max_size_input.setMaximumWidth(100)
         self.max_size_input.editingFinished.connect(self.validateSize)
-        hbox.addWidget(self.max_size_input)
-        
+        bottom_layout.addWidget(self.max_size_input)
+
         label = QLabel(" : Maximum Size entre 250 et 1920.")
         # label.setMaximumWidth(100)
         label.setMaximumHeight(20)
-        hbox.addWidget(label)
+        bottom_layout.addWidget(label)
+        
 
         self.btn_optimize = QPushButton("Optimize Pictures", self)
         self.btn_optimize.clicked.connect(self.optimizePictures)
         self.btn_optimize.setObjectName("GO")
-        layout.addWidget(self.btn_optimize)
+        bottom_layout.addWidget(self.btn_optimize)
 
         self.progress = QProgressBar()
         layout.addWidget(self.progress)
@@ -181,9 +188,6 @@ class Converter(QWidget) :
             # print("not acceptable")
             self.max_size_input.setText("1640")
 
-    def onListItemClick(self, item):
-        if item.checkState() ==  Qt.Checked : item.setCheckState(Qt.Unchecked)
-        else : item.setCheckState(Qt.Checked)
 
 
     def onListViewItemClick(self, idx):
