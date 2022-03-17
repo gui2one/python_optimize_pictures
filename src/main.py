@@ -1,14 +1,28 @@
 import sys
 from Application import Converter
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import *
+from options_dialog import OptionsDialog
 
+class MainWindow(QMainWindow):
 
+    def __init__(self, parent = None):
+        super(MainWindow,self).__init__(parent)
+        self.converter_window = Converter('Converter 2')
+        self.setCentralWidget(self.converter_window)
+        self.show()
+
+        option_action = self.menuBar().addAction("Options")
+        option_action.triggered.connect(self.displayOptions)
+
+    def displayOptions(self):
+        w = OptionsDialog()
+        w.exec()
 app = QApplication([])
 app.setStyleSheet('''
 *{
 
     background-color: #111111;
-
+    color : white;
     font-size : 15px;
 }
 QLabel{
@@ -79,8 +93,8 @@ QProgressBar::chunk {
     width: 20px;
 }
 ''');
-my_widget = Converter("Converter")
-
+# my_widget = Converter("Converter")
+window = MainWindow()
 
 app.exec_()
 
