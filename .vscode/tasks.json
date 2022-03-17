@@ -6,8 +6,9 @@
         {
             "label": "run main.py",
             "type": "shell",
-            "command": "python ./src/main.py",
+            "command": "${config:python.defaultInterpreterPath} ",
             "problemMatcher": [],
+            "args": ["./src/main.py"],
             "group": {
                 "kind": "build",
                 "isDefault": true
