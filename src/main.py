@@ -1,13 +1,18 @@
 import sys
-from Application import Converter
+from Application import Optimizer
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from options_dialog import OptionsDialog
 
 class MainWindow(QMainWindow):
 
     def __init__(self, parent = None):
         super(MainWindow,self).__init__(parent)
-        self.converter_window = Converter('Converter 2')
+        self.setGeometry(200, 200, 800, 600)
+        self.setWindowTitle('SprayLoc -- Picture Optimizer v0.0.3')
+        self.setWindowIcon(QIcon('favicon.ico'))
+        self.converter_window = Optimizer('Optimizer 2')
         self.setCentralWidget(self.converter_window)
         self.show()
 

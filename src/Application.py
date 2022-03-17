@@ -2,8 +2,9 @@ import os
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import  *
 from PyQt5.QtCore import *
-from picture_converter import listFilesInDir, optimizePicture
-class Converter(QWidget) :
+from picture_optimizer import listFilesInDir, optimizePicture
+
+class Optimizer(QWidget) :
 
     pictureDir = ""
     label = None
@@ -23,9 +24,7 @@ class Converter(QWidget) :
   
 
     def initUI(self):
-        self.setGeometry(200, 200, 800, 600)
-        self.setWindowTitle('SprayLoc -- Picture Optimizer v0.0.2')
-        self.setWindowIcon(QIcon('favicon.ico'))
+
 
         self.main_frame = QFrame(self)
         # frame.setFrameShape(QFrame.Box)
