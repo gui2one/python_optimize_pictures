@@ -37,10 +37,10 @@ def optimizePicture(file_name, pictures_folder, max_size=512):
         new_height =  int(height * scale_ratio)
         # num_components = img.info()
         
-        print("\tmode : %s"%(img.mode))
-        print("\tformat : %s"%(img.format_description))
-        print("\tsize : %d %d"%(width, height))
-        print("\tNew size : %d %d"%(new_width, new_height))
+        print(f"\tmode : {img.mode}")
+        print(f"\tformat : {img.format_description}")
+        print(f"\tsize : {width} {height}")
+        print(f"\tNew size : {new_width} {new_height}")
 
         root, ext = os.path.splitext(file_name)
         img.load()
