@@ -20,6 +20,7 @@ class MainWindow(QMainWindow):
         option_action.triggered.connect(self.displayOptions)
 
     def displayOptions(self):
+        
         w = OptionsDialog()
         w.exec()
 app = QApplication([])
