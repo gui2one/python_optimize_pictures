@@ -152,7 +152,7 @@ class Optimizer(QWidget) :
                 checked_rows.append(i)
                 
         for i, idx in enumerate(checked_rows):
-            item = model.item(idx)
+            item : QStandardItem = model.item(idx)
             model_index = model.index(idx, 2)
             if item.checkState() :
                 # print(item.text())
@@ -165,7 +165,7 @@ class Optimizer(QWidget) :
 
                 if optimized_path != None:
                     opt_weight = os.path.getsize(optimized_path)
-    
+                    item.setBackground(QColor('green'))
                 self.list_view.model().setItemData(model_index , {0: self.displayFileWeight(opt_weight)})
 
             

@@ -23,6 +23,7 @@ class MainWindow(QMainWindow):
         w = OptionsDialog()
         w.exec()
 app = QApplication([])
+
 app.setStyleSheet('''
 *{
 
@@ -39,13 +40,13 @@ QLabel{
 }
 QTableView{
     background-color : #222222;
-    selection-background-color : #222222;
+    selection-background-color : #222266;
     color : black;
     font-size : 13px;
 }
 
 QTableView::item:active{
-    background-color : #222222;
+    /* background-color : #222222; */
     font-size : 13px;
     color : white;
 }
@@ -105,9 +106,8 @@ QProgressBar::chunk {
     width: 20px;
 }
 ''');
-# my_widget = Converter("Converter")
-window = MainWindow()
 
+window = MainWindow()
 app.exec_()
 
 sys.exit(0)
