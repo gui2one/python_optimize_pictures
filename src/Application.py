@@ -52,8 +52,17 @@ class Optimizer(QWidget) :
 
 
         self.list_view = QTableView()
-        self.list_view.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.list_view.verticalHeader().hide()
+        self.list_view.horizontalHeader().hide()
         
+        self.list_view.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.list_view.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        model = QStandardItemModel()
+        model.setHorizontalHeaderLabels(["name", "before", "after"])
+
+        self.list_view.setModel(model)
+
         # self.list_view.setMaximumHeight(250)
         self.list_view.clicked.connect(self.onListViewItemClick)
         sources_layout.addWidget(self.list_view) 
@@ -92,6 +101,8 @@ class Optimizer(QWidget) :
         self.show()
 
     def getFolderName(self): 
+
+        self.list_view.horizontalHeader().show()
         selected_folder = str(QFileDialog.getExistingDirectory(None, "Select Directory"))
         if selected_folder.strip(" ") == '' : return
         self.pictureDir = selected_folder
@@ -101,11 +112,9 @@ class Optimizer(QWidget) :
 
         self.progress.setValue(0)
         self.progress.hide()
-        model = QStandardItemModel()
-        model.setHorizontalHeaderLabels(["name", "before", "after"])
 
-        self.list_view.setModel(model)
         self.list_view.setColumnWidth(0,350)
+
         for info in files_infos :
             file_name = QStandardItem(info[0])
             file_name.setCheckable(True)
@@ -118,7 +127,7 @@ class Optimizer(QWidget) :
 
             weight_after = QStandardItem()
             weight_after.setTextAlignment(Qt.AlignRight)
-            model.appendRow([file_name, weight, weight_after])
+            self.list_view.model().appendRow([file_name, weight, weight_after])
             
 
     def displayFileWeight(self,num_bytes):
@@ -163,6 +172,7 @@ class Optimizer(QWidget) :
 
 
     def selectAll(self):
+        self.btn_optimize.setDisabled(False)
 
         for i in range(self.list_view.model().rowCount()):
             model = self.list_view.model()
@@ -171,6 +181,7 @@ class Optimizer(QWidget) :
 
     def deselectAll(self):
 
+        self.btn_optimize.setDisabled(True)
 
         for i in range(self.list_view.model().rowCount()):
             model = self.list_view.model()
@@ -195,3 +206,14 @@ class Optimizer(QWidget) :
         item = model.item(idx.row())
         if item.checkState() ==  Qt.Checked : item.setCheckState(Qt.Unchecked)
         else : item.setCheckState(Qt.Checked)
+
+        # check number of checked items, if 0 I should deactivate 'optimize' button
+        num = 0
+        for i in range(model.rowCount()):
+            item = model.item(i)
+            if item.checkState() == Qt.Checked : 
+                num += 1
+        if num == 0 :
+            self.btn_optimize.setDisabled(True)
+        else : 
+            self.btn_optimize.setDisabled(False)

@@ -90,6 +90,10 @@ QPushButton#GO:hover {
     background: qlineargradient( x1:0 y1:0.2, x2:1.0 y2:1, stop:0 #33bb33, stop:1 #559955);
  
 }
+QPushButton#GO:disabled{
+    background: qlineargradient( x1:0 y1:0.2, x2:1.0 y2:1, stop:0 #337733, stop:1 #556655);
+
+}
 QProgressBar {
     border: 2px solid grey;
     border-radius: 5px;
