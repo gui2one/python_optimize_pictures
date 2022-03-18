@@ -16,7 +16,6 @@ class ColorPickerWidget(QWidget):
         print(event)
         painter = QPainter(self)
 
-        painter.setPen(QPen(Qt.green,  8, Qt.DashLine))
         painter.fillRect(event.rect(), self.color)
 
     def mousePressEvent(self, ev):
