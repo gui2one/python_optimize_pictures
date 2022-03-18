@@ -19,10 +19,7 @@ class ColorPickerWidget(QWidget):
         painter.fillRect(event.rect(), self.color)
 
     def mousePressEvent(self, ev):
-        w = QColorDialog(self)
-        # w.exec()
-
-        _color = w.getColor()
+        _color = QColorDialog(self).getColor()
         self.color = _color
         self.clicked.emit()
 
