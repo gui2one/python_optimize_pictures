@@ -27,8 +27,11 @@ app.setStyleSheet('''
 *{
 
     background-color: #111111;
-    color : white;
+
     font-size : 15px;
+}
+QMenuBar{
+    color : white;
 }
 QLabel{
     font-size : 13px;
