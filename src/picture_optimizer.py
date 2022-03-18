@@ -37,10 +37,7 @@ def optimizePicture(file_name, pictures_folder, max_size=512):
         new_height =  int(height * scale_ratio)
         # num_components = img.info()
         
-        print(f"\tmode : {img.mode}")
-        print(f"\tformat : {img.format_description}")
-        print(f"\tsize : {width} {height}")
-        print(f"\tNew size : {new_width} {new_height}")
+
 
         root, ext = os.path.splitext(file_name)
         img.load()
@@ -64,7 +61,11 @@ def optimizePicture(file_name, pictures_folder, max_size=512):
         else :
             img.save(save_path)
 
-        print("\tSaving to : "+os.path.abspath(save_path))
+        print("Saving to : "+os.path.abspath(save_path))
+        print(f"\tmode : {img.mode}")
+        print(f"\tformat : {img.format_description}")
+        print(f"\tsize : {width} {height}")
+        print(f"\tNew size : {new_width} {new_height}")
 
         img.close()
 
