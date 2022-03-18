@@ -20,9 +20,6 @@ class Optimizer(QWidget) :
         super().__init__()
         self.initUI()
 
-
-  
-
     def initUI(self):
 
 
@@ -36,7 +33,7 @@ class Optimizer(QWidget) :
         layout.setAlignment(Qt.AlignTop)
         self.btn_dir = QPushButton("Choisir un Dossier", self)
         layout.addWidget(self.btn_dir)
-        self.btn_dir.clicked.connect(self.getFolderName)
+        self.btn_dir.clicked.connect(self.chooseDirectory)
 
         sources_layout = QHBoxLayout()
         layout.addLayout(sources_layout)
@@ -100,12 +97,24 @@ class Optimizer(QWidget) :
         self.progress.hide()
         self.show()
 
-    def getFolderName(self): 
-
-        self.list_view.horizontalHeader().show()
+    def chooseDirectory(self):
         selected_folder = str(QFileDialog.getExistingDirectory(None, "Select Directory"))
         if selected_folder.strip(" ") == '' : return
         self.pictureDir = selected_folder
+        
+        self.buildFilesList()
+        pass
+    
+    
+    def clearList(self):
+        self.list_view.model().removeRows(0, self.list_view.model().rowCount())
+    def buildFilesList(self): 
+
+        if self.pictureDir == "" : return
+
+        self.clearList()
+        self.list_view.horizontalHeader().show()
+
         # print(self.pictureDir)
         self.btn_dir.setText(self.pictureDir)
         files_infos = listFilesInDir(self.pictureDir)

@@ -9,20 +9,57 @@ class MainWindow(QMainWindow):
 
     def __init__(self, parent = None):
         super(MainWindow,self).__init__(parent)
-        self.setGeometry(200, 200, 800, 600)
+        
+        
+        self.settings = QSettings("SprayLoc", "Picture Optimizer")
+
+        
         self.setWindowTitle('SprayLoc -- Picture Optimizer v0.0.3')
         self.setWindowIcon(QIcon('favicon.ico'))
         self.converter_window = Optimizer('Optimizer 2')
         self.setCentralWidget(self.converter_window)
-        self.show()
-
+        
+        
         option_action = self.menuBar().addAction("Options")
         option_action.triggered.connect(self.displayOptions)
+        
+        
+        self.restoreSettings()
+        self.show()
 
     def displayOptions(self):
         
         w = OptionsDialog()
         w.exec()
+    
+    def saveSettings(self):
+        self.settings.setValue("window_position", self.pos())
+        self.settings.setValue("window_size", self.size())
+        
+        self.settings.setValue("directory", self.converter_window.pictureDir)
+            
+            
+        pass
+    
+    def restoreSettings(self):
+        
+        ## apply saved settings
+        try :
+            size : QSize = self.settings.value("window_size")
+            pos : QPoint = self.settings.value("window_position")
+            self.setGeometry(pos.x(), pos.y(), size.width(), size.height())
+        except :
+            pass
+        
+        try :
+            self.converter_window.pictureDir = self.settings.value("directory")
+            self.converter_window.buildFilesList()
+        except: 
+            pass
+        
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        self.saveSettings()
+        return super().closeEvent(a0)
 app = QApplication([])
 
 app.setStyleSheet('''
@@ -81,6 +118,9 @@ QPushButton {
     border : none;    
     background: qlineargradient( x1:0 y1:0.2, x2:1.0 y2:1, stop:0 #555555, stop:1 #333333);
     color : white;
+}
+QPushButton:hover{
+    border : 1px solid white; 
 }
 QPushButton#GO { 
     padding : 15px;

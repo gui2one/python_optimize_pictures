@@ -60,7 +60,7 @@ def optimizePicture(file_name, pictures_folder, max_size=512):
 
         save_path = os.path.join(optim_folder,root+"_OPTIM"+ext)
         if ext.lower() == ".jpg" or ext.lower() == ".jpeg":
-            img.save(save_path, quality=50)
+            img.save(save_path, quality=50, optimize=True)
         else :
             img.save(save_path)
 
