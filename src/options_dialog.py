@@ -15,16 +15,10 @@ class OptionsDialog(QDialog) :
         
         self.initUI()
 
-
     def initUI(self):
         layout = QVBoxLayout()
-        layout.setAlignment(Qt.AlignTop)
+        layout.setAlignment(Qt.AlignTop | Qt.AlignLeft)
 
-        option1 = CheckBoxWidget("houah !!!", self)
+        option1 = CheckBoxWidget("Convert PNGs to JPEG", self)
         layout.addWidget(option1)
-
-
         self.setLayout(layout)
-
-        self.show()
-        pass
