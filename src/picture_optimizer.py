@@ -1,5 +1,6 @@
 from PIL import Image
 import os
+from PyQt5.QtGui import QColor
 
 def checkImageExtension(file_name) :
     extension_list = [".webp",".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".tif", ".gif"]
@@ -21,7 +22,12 @@ def listFilesInDir( dir_path):
                 clean_files.append((file_name, size))
     return clean_files
 
-def optimizePicture(file_name, pictures_folder, max_size=512):
+class OptimizerOptions():
+    b_convert_png_to_jpeg = True
+    b_convert_tiff_to_jpeg = True
+    background_color = QColor("pink")
+    
+def optimizePicture(file_name, pictures_folder, max_size=512, options : OptimizerOptions = OptimizerOptions()):
     with Image.open(os.path.join(pictures_folder, file_name), 'r') as img :
 
 
@@ -51,15 +57,23 @@ def optimizePicture(file_name, pictures_folder, max_size=512):
         if not os.path.isdir(optim_folder):
             os.makedirs(optim_folder, mode=0o700)
         
-        # if ext.lower() == ".png"  or ext.lower() == ".webp":
-        #     img = img.convert('RGB')
-        #     ext = ".jpg" 
+        if ext.lower() == ".png"  or ext.lower() == ".webp":
+            if img.mode == "RGBA" :
+        
+                color = options.background_color
+                bg_image = Image.new("RGBA", img.size, (color.red(), color.green(), color.blue()))
+                bg_image.paste(img, (0,0), img)
+                # bg_image = bg_image.convert('RGB')
+                img = bg_image
+                
+            img = img.convert('RGB')
+            ext = ".jpg" 
 
         save_path = os.path.join(optim_folder,root+"_OPTIM"+ext)
         if ext.lower() == ".jpg" or ext.lower() == ".jpeg":
-            img.save(save_path, quality=50, optimize=True)
+            img.save(save_path, quality=100, optimize=True)
         else :
-            img.save(save_path)
+            img.save(save_path , optimize=True)
 
         print("Saving to : "+os.path.abspath(save_path))
         print(f"\tmode : {img.mode}")

@@ -4,14 +4,13 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from options_dialog import OptionsDialog
-
+from app_settings import ApplicationSettings
 class MainWindow(QMainWindow):
 
     def __init__(self, parent = None):
         super(MainWindow,self).__init__(parent)
-        
-        
-        self.settings = QSettings("SprayLoc", "Picture Optimizer")
+
+        self.settings = ApplicationSettings()
 
         
         self.setWindowTitle('SprayLoc -- Picture Optimizer v0.0.3')
@@ -42,24 +41,25 @@ class MainWindow(QMainWindow):
         pass
     
     def restoreSettings(self):
-        
+
         ## apply saved settings
-        try :
-            size : QSize = self.settings.value("window_size")
-            pos : QPoint = self.settings.value("window_position")
-            self.setGeometry(pos.x(), pos.y(), size.width(), size.height())
-        except :
-            pass
+
+        size : QSize = self.settings.value("window_size")
+        pos : QPoint = self.settings.value("window_position")
+        if size != None and pos != None :
+            self.setGeometry(pos.x(), pos.y()+40, size.width(), size.height())
+
         
-        try :
-            self.converter_window.pictureDir = self.settings.value("directory")
-            self.converter_window.buildFilesList()
-        except: 
-            pass
+        self.converter_window.pictureDir = self.settings.value("directory")
+        self.converter_window.buildFilesList()
+
         
-    def closeEvent(self, a0: QCloseEvent) -> None:
+    def closeEvent(self, event: QCloseEvent) -> None:
         self.saveSettings()
-        return super().closeEvent(a0)
+
+        return super().closeEvent(event)
+    
+    
 app = QApplication([])
 
 app.setStyleSheet('''
