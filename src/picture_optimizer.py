@@ -1,6 +1,8 @@
 from PIL import Image
 import os
 from PyQt5.QtGui import QColor
+from PyQt5.QtCore import *
+
 
 def checkImageExtension(file_name) :
     extension_list = [".webp",".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".tif", ".gif"]
@@ -25,7 +27,7 @@ def listFilesInDir( dir_path):
 class OptimizerOptions():
     b_convert_png_to_jpeg = True
     b_convert_tiff_to_jpeg = True
-    background_color = QColor("pink")
+    background_color = QColor(255,255,255)
     
 def optimizePicture(file_name, pictures_folder, max_size=512, options : OptimizerOptions = OptimizerOptions()):
     with Image.open(os.path.join(pictures_folder, file_name), 'r') as img :
@@ -61,7 +63,11 @@ def optimizePicture(file_name, pictures_folder, max_size=512, options : Optimize
             if img.mode == "RGBA" :
         
                 color = options.background_color
-                bg_image = Image.new("RGBA", img.size, (color.red(), color.green(), color.blue()))
+                if color != None :
+                    bg_image = Image.new("RGBA", img.size, (color.red(), color.green(), color.blue()))
+                else : 
+                    bg_image = Image.new("RGBA", img.size, (255, 255, 255))
+                    
                 bg_image.paste(img, (0,0), img)
                 # bg_image = bg_image.convert('RGB')
                 img = bg_image

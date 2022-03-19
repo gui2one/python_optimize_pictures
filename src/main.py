@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from options_dialog import OptionsDialog
 from app_settings import ApplicationSettings
+from picture_optimizer import OptimizerOptions
 class MainWindow(QMainWindow):
 
     def __init__(self, parent = None):
@@ -28,7 +29,10 @@ class MainWindow(QMainWindow):
 
     def displayOptions(self):
         
-        w = OptionsDialog()
+        options = OptimizerOptions()
+        options.background_color = QColor(0,0,0,255)
+        # options.background_color.setRed()
+        w = OptionsDialog(options, self)
         w.exec()
     
     def saveSettings(self):
@@ -36,7 +40,8 @@ class MainWindow(QMainWindow):
         self.settings.setValue("window_size", self.size())
         
         self.settings.setValue("directory", self.converter_window.pictureDir)
-            
+        
+        self.settings.setValue("bg_color_r", int(self.converter_window.options.background_color.red()))
             
         pass
     
@@ -52,7 +57,11 @@ class MainWindow(QMainWindow):
         
         self.converter_window.pictureDir = self.settings.value("directory")
         self.converter_window.buildFilesList()
-
+        
+        try : 
+            self.converter_window.options.background_color.setRed(self.settings.value("bg_color_r"))
+        except:
+            pass
         
     def closeEvent(self, event: QCloseEvent) -> None:
         self.saveSettings()

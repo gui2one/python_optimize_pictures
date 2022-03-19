@@ -6,22 +6,33 @@ class ColorPickerWidget(QWidget):
     
 
     clicked = pyqtSignal()
-    def __init__(self, parent = None):
+    accepted = pyqtSignal()
+    def __init__(self, parent = None, initial_color = QColor("white")):
         super(ColorPickerWidget, self).__init__(parent)
-        # print("ColorPickerWidget")
+
         self.setFixedSize(50,25)
-        self.color = QColor("white")
+        self.color = initial_color
+        self.clr_dialog = QColorDialog()
+        self.clr_dialog.accepted.connect(self.onAcceptColor)
         
     def paintEvent(self, event):
-        print(event)
+        
         painter = QPainter(self)
-
         painter.fillRect(event.rect(), self.color)
 
     def mousePressEvent(self, ev):
-        _color = QColorDialog(self).getColor()
+
+        _color = self.clr_dialog.getColor(self.color)
         self.color = _color
         self.clicked.emit()
 
     def value(self) -> QColor : 
+        
         return self.color
+    
+    def onAcceptColor(self):
+        
+        self.accepted.emit()
+        print("accept")
+
+ 

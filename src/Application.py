@@ -19,6 +19,7 @@ class Optimizer(QWidget) :
     def __init__(self, name):
         super().__init__()
         self.settings = ApplicationSettings()
+        self.options = OptimizerOptions()
         self.initUI()
 
     def initUI(self):
@@ -150,7 +151,9 @@ class Optimizer(QWidget) :
     def optimizePictures(self):
         self.progress.show()
         model = self.list_view.model()
+        
         if not model : return
+        
         num = model.rowCount()
         checked_rows = []
         # get num checked
@@ -162,9 +165,11 @@ class Optimizer(QWidget) :
         for i, idx in enumerate(checked_rows):
             item : QStandardItem = model.item(idx)
             model_index = model.index(idx, 2)
+            
+            # self.options.background_color = self.settings.value("background_color")
             if item.checkState() :
                 
-                optimized_path = optimizePicture(item.text(), self.pictureDir, int(self.max_size_input.text()))
+                optimized_path = optimizePicture(item.text(), self.pictureDir, int(self.max_size_input.text()), self.options)
                 
                 if len(checked_rows) > 1 :
                     percent = int(i / (len(checked_rows)-1) * 100)

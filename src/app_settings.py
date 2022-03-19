@@ -12,6 +12,7 @@ class ApplicationSettings(QSettings):
         try :
             return super().value(property_name)
         except:
+            print("value not found in settings !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             return None
         
     

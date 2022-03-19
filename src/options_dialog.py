@@ -5,10 +5,13 @@ from PyQt5.QtGui import *
 from widgets.checkbox_widget import CheckBoxWidget
 from widgets.color_picker import ColorPickerWidget
 
+from picture_optimizer import OptimizerOptions 
+
 class OptionsDialog(QDialog) :
 
-    def __init__(self, parent = None):
+    def __init__(self, options : OptimizerOptions, parent = None):
         super(OptionsDialog, self).__init__(parent)
+        self.options = options 
         self.setWindowTitle("Options")
         self.setFixedSize(500,500)
         self.setWindowModality(Qt.ApplicationModal)
@@ -23,9 +26,16 @@ class OptionsDialog(QDialog) :
         layout.addWidget(option1)
 
 
-        color_option = ColorPickerWidget(self)
-        # color_option.update()
+        self.color_option = ColorPickerWidget(self)
+        
 
-        layout.addWidget(color_option)
+        layout.addWidget(self.color_option)
 
         self.setLayout(layout)
+        
+        
+    def closeEvent(self, event: QCloseEvent):
+        self.options.background_colo = self.color_option.value()
+        
+        print(self.options)
+        return super().closeEvent(event)
