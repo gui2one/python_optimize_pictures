@@ -2,8 +2,8 @@ import os
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import  *
 from PyQt5.QtCore import *
-from picture_optimizer import listFilesInDir, optimizePicture
-
+from picture_optimizer import listFilesInDir, optimizePicture, OptimizerOptions
+from app_settings import ApplicationSettings
 class Optimizer(QWidget) :
 
     pictureDir = ""
@@ -18,10 +18,9 @@ class Optimizer(QWidget) :
 
     def __init__(self, name):
         super().__init__()
+        self.settings = ApplicationSettings()
+        self.options = OptimizerOptions()
         self.initUI()
-
-
-  
 
     def initUI(self):
 
@@ -36,7 +35,7 @@ class Optimizer(QWidget) :
         layout.setAlignment(Qt.AlignTop)
         self.btn_dir = QPushButton("Choisir un Dossier", self)
         layout.addWidget(self.btn_dir)
-        self.btn_dir.clicked.connect(self.getFolderName)
+        self.btn_dir.clicked.connect(self.chooseDirectory)
 
         sources_layout = QHBoxLayout()
         layout.addLayout(sources_layout)
@@ -100,12 +99,23 @@ class Optimizer(QWidget) :
         self.progress.hide()
         self.show()
 
-    def getFolderName(self): 
-
-        self.list_view.horizontalHeader().show()
+    def chooseDirectory(self):
         selected_folder = str(QFileDialog.getExistingDirectory(None, "Select Directory"))
         if selected_folder.strip(" ") == '' : return
         self.pictureDir = selected_folder
+        
+        self.buildFilesList()
+
+    def clearList(self):
+        self.list_view.model().removeRows(0, self.list_view.model().rowCount())
+        
+    def buildFilesList(self): 
+
+        if self.pictureDir == "" : return
+
+        self.clearList()
+        self.list_view.horizontalHeader().show()
+
         # print(self.pictureDir)
         self.btn_dir.setText(self.pictureDir)
         files_infos = listFilesInDir(self.pictureDir)
@@ -128,7 +138,6 @@ class Optimizer(QWidget) :
             weight_after = QStandardItem()
             weight_after.setTextAlignment(Qt.AlignRight)
             self.list_view.model().appendRow([file_name, weight, weight_after])
-            
 
     def displayFileWeight(self,num_bytes):
         result = ''
@@ -142,7 +151,9 @@ class Optimizer(QWidget) :
     def optimizePictures(self):
         self.progress.show()
         model = self.list_view.model()
+        
         if not model : return
+        
         num = model.rowCount()
         checked_rows = []
         # get num checked
@@ -154,9 +165,11 @@ class Optimizer(QWidget) :
         for i, idx in enumerate(checked_rows):
             item : QStandardItem = model.item(idx)
             model_index = model.index(idx, 2)
+            
+            # self.options.background_color = self.settings.value("background_color")
             if item.checkState() :
-                # print(item.text())
-                optimized_path = optimizePicture(item.text(), self.pictureDir, int(self.max_size_input.text()))
+                
+                optimized_path = optimizePicture(item.text(), self.pictureDir, int(self.max_size_input.text()), self.options)
                 
                 if len(checked_rows) > 1 :
                     percent = int(i / (len(checked_rows)-1) * 100)
@@ -167,9 +180,6 @@ class Optimizer(QWidget) :
                     opt_weight = os.path.getsize(optimized_path)
                     item.setBackground(QColor('green'))
                 self.list_view.model().setItemData(model_index , {0: self.displayFileWeight(opt_weight)})
-
-            
-
 
     def selectAll(self):
         self.btn_optimize.setDisabled(False)
@@ -188,18 +198,15 @@ class Optimizer(QWidget) :
             item = model.item(i)
             item.setCheckState( Qt.Unchecked)
 
-
     def validateSize(self):
         rule = QDoubleValidator(250, 1920, 0)
 
         
-        if rule.validate(self.max_size_input.text(), 42)[0] == QValidator.Acceptable:
+        if rule.validate(self.max_size_input.text(), 0)[0] == QValidator.Acceptable:
             pass
         else :
             # print("not acceptable")
             self.max_size_input.setText("1640")
-
-
 
     def onListViewItemClick(self, idx):
         model = self.list_view.model()

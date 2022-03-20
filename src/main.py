@@ -4,25 +4,71 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from options_dialog import OptionsDialog
-
+from app_settings import ApplicationSettings
+from picture_optimizer import OptimizerOptions
 class MainWindow(QMainWindow):
 
     def __init__(self, parent = None):
         super(MainWindow,self).__init__(parent)
-        self.setGeometry(200, 200, 800, 600)
+
+        self.settings = ApplicationSettings()
+
+        
         self.setWindowTitle('SprayLoc -- Picture Optimizer v0.0.3')
         self.setWindowIcon(QIcon('favicon.ico'))
         self.converter_window = Optimizer('Optimizer 2')
         self.setCentralWidget(self.converter_window)
-        self.show()
-
+        
+        
         option_action = self.menuBar().addAction("Options")
         option_action.triggered.connect(self.displayOptions)
+        
+        
+        self.restoreSettings()
+        self.show()
 
     def displayOptions(self):
         
-        w = OptionsDialog()
+        options = OptimizerOptions()
+        options.background_color = QColor(0,0,0,255)
+        # options.background_color.setRed()
+        w = OptionsDialog(options, self)
         w.exec()
+    
+    def saveSettings(self):
+        self.settings.setValue("window_position", self.pos())
+        self.settings.setValue("window_size", self.size())
+        
+        self.settings.setValue("directory", self.converter_window.pictureDir)
+        
+        self.settings.setValue("bg_color_r", int(self.converter_window.options.background_color.red()))
+            
+        pass
+    
+    def restoreSettings(self):
+
+        ## apply saved settings
+
+        size : QSize = self.settings.value("window_size")
+        pos : QPoint = self.settings.value("window_position")
+        if size != None and pos != None :
+            self.setGeometry(pos.x(), pos.y()+40, size.width(), size.height())
+
+        
+        self.converter_window.pictureDir = self.settings.value("directory")
+        self.converter_window.buildFilesList()
+        
+        try : 
+            self.converter_window.options.background_color.setRed(self.settings.value("bg_color_r"))
+        except:
+            pass
+        
+    def closeEvent(self, event: QCloseEvent) -> None:
+        self.saveSettings()
+
+        return super().closeEvent(event)
+    
+    
 app = QApplication([])
 
 app.setStyleSheet('''
@@ -81,6 +127,9 @@ QPushButton {
     border : none;    
     background: qlineargradient( x1:0 y1:0.2, x2:1.0 y2:1, stop:0 #555555, stop:1 #333333);
     color : white;
+}
+QPushButton:hover{
+    border : 1px solid white; 
 }
 QPushButton#GO { 
     padding : 15px;
