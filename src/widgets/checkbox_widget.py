@@ -15,8 +15,15 @@ class CheckBoxWidget(QWidget):
         layout.addWidget(self.label)
 
         self.setLayout(layout)
+        
+        
+    def value(self):
+        return self.check_box.checkState()
 
+    def setValue(self, val):
 
+        self.check_box.setChecked(val)
+        
 class ClickableLabel(QLabel):
 
     clicked=pyqtSignal()

@@ -9,24 +9,25 @@ from picture_optimizer import OptimizerOptions
 
 class OptionsDialog(QDialog) :
 
-    def __init__(self, options : OptimizerOptions, parent = None):
+    def __init__(self,parent = None):
         super(OptionsDialog, self).__init__(parent)
-        self.options = options 
+        
         self.setWindowTitle("Options")
         self.setFixedSize(500,500)
         self.setWindowModality(Qt.ApplicationModal)
-        
+        self.options : OptimizerOptions = self.parent().converter_window.options
         self.initUI()
 
     def initUI(self):
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignTop | Qt.AlignLeft)
 
-        option1 = CheckBoxWidget("Convert PNGs to JPEG", self)
-        layout.addWidget(option1)
+        self.option1 = CheckBoxWidget("Convert PNGs to JPEG", self)
+        self.option1.setValue(self.options.b_convert_png_to_jpeg)
+        layout.addWidget(self.option1)
 
 
-        self.color_option = ColorPickerWidget(self)
+        self.color_option = ColorPickerWidget(self, self.options.background_color)
         
 
         layout.addWidget(self.color_option)
@@ -35,7 +36,6 @@ class OptionsDialog(QDialog) :
         
         
     def closeEvent(self, event: QCloseEvent):
-        self.options.background_colo = self.color_option.value()
-        
-        print(self.options)
+        self.options.background_color = self.color_option.value()
+        self.options.b_convert_png_to_jpeg = self.option1.value() == Qt.Checked
         return super().closeEvent(event)

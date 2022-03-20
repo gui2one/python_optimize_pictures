@@ -23,6 +23,7 @@ class MainWindow(QMainWindow):
         option_action = self.menuBar().addAction("Options")
         option_action.triggered.connect(self.displayOptions)
         
+        self.initSettings()
         
         self.restoreSettings()
         self.show()
@@ -32,8 +33,26 @@ class MainWindow(QMainWindow):
         options = OptimizerOptions()
         options.background_color = QColor(0,0,0,255)
         # options.background_color.setRed()
-        w = OptionsDialog(options, self)
+        w = OptionsDialog(self)
         w.exec()
+    
+    def initSettings(self):
+        if not self.settings.value("window_position") :
+            self.settings.setValue("window_position", self.pos())
+        if not self.settings.value("window_size") :
+            self.settings.setValue("window_size", self.size())
+        
+        if not self.settings.value("directory") :
+            self.settings.setValue("directory", "")
+            
+        if not self.settings.value("bg_color_r") :        
+            self.settings.setValue("bg_color_r", 0)
+            self.settings.setValue("bg_color_g", 0)
+            self.settings.setValue("bg_color_b", 0)        
+            
+        if not self.settings.value("convert_png_to_jpeg") :        
+            self.settings.setValue("convert_png_to_jpeg", True)
+        
     
     def saveSettings(self):
         self.settings.setValue("window_position", self.pos())
@@ -42,7 +61,10 @@ class MainWindow(QMainWindow):
         self.settings.setValue("directory", self.converter_window.pictureDir)
         
         self.settings.setValue("bg_color_r", int(self.converter_window.options.background_color.red()))
+        self.settings.setValue("bg_color_g", int(self.converter_window.options.background_color.green()))
+        self.settings.setValue("bg_color_b", int(self.converter_window.options.background_color.blue()))
             
+        self.settings.setValue("convert_png_to_jpeg", self.converter_window.options.b_convert_png_to_jpeg)
         pass
     
     def restoreSettings(self):
@@ -55,12 +77,22 @@ class MainWindow(QMainWindow):
             self.setGeometry(pos.x(), pos.y()+40, size.width(), size.height())
 
         
-        self.converter_window.pictureDir = self.settings.value("directory")
-        self.converter_window.buildFilesList()
+        pictureDir = self.settings.value("directory")
+        
+        if pictureDir :
+            self.converter_window.pictureDir = pictureDir
+            self.converter_window.buildFilesList()
         
         try : 
             self.converter_window.options.background_color.setRed(self.settings.value("bg_color_r"))
+            self.converter_window.options.background_color.setGreen(self.settings.value("bg_color_g"))
+            self.converter_window.options.background_color.setBlue(self.settings.value("bg_color_b"))
         except:
+            pass
+        
+        try :
+            self.converter_window.options.b_convert_png_to_jpeg = (False, True)[self.settings.value("convert_png_to_jpeg") == "true"]
+        except :
             pass
         
     def closeEvent(self, event: QCloseEvent) -> None:

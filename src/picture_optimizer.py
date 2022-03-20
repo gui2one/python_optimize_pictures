@@ -59,21 +59,22 @@ def optimizePicture(file_name, pictures_folder, max_size=512, options : Optimize
         if not os.path.isdir(optim_folder):
             os.makedirs(optim_folder, mode=0o700)
         
-        if ext.lower() == ".png"  or ext.lower() == ".webp":
-            if img.mode == "RGBA" :
-        
-                color = options.background_color
-                if color != None :
-                    bg_image = Image.new("RGBA", img.size, (color.red(), color.green(), color.blue()))
-                else : 
-                    bg_image = Image.new("RGBA", img.size, (255, 255, 255))
+        if options.b_convert_png_to_jpeg :
+            if ext.lower() == ".png"  or ext.lower() == ".webp":
+                if img.mode == "RGBA" :
+            
+                    color = options.background_color
+                    if color != None :
+                        bg_image = Image.new("RGBA", img.size, (color.red(), color.green(), color.blue()))
+                    else : 
+                        bg_image = Image.new("RGBA", img.size, (255, 255, 255))
+                        
+                    bg_image.paste(img, (0,0), img)
+                    # bg_image = bg_image.convert('RGB')
+                    img = bg_image
                     
-                bg_image.paste(img, (0,0), img)
-                # bg_image = bg_image.convert('RGB')
-                img = bg_image
-                
-            img = img.convert('RGB')
-            ext = ".jpg" 
+                img = img.convert('RGB')
+                ext = ".jpg" 
 
         save_path = os.path.join(optim_folder,root+"_OPTIM"+ext)
         if ext.lower() == ".jpg" or ext.lower() == ".jpeg":
