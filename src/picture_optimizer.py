@@ -78,9 +78,9 @@ def optimizePicture(file_name, pictures_folder, max_size=512, options : Optimize
 
         save_path = os.path.join(optim_folder,root+"_OPTIM"+ext)
         if ext.lower() == ".jpg" or ext.lower() == ".jpeg":
-            img.save(save_path, quality=100, optimize=True)
+            img.save(save_path, quality=50, optimize=True)
         else :
-            img.save(save_path , optimize=True)
+            img.save(save_path , optimize=True, compress_level=1)
 
         print("Saving to : "+os.path.abspath(save_path))
         print(f"\tmode : {img.mode}")
